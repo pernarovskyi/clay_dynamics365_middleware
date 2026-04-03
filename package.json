@@ -2,9 +2,9 @@
   "name": "clay-middleware",
   "version": "1.0.0",
   "description": "",
-  "main": "api.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node api.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
