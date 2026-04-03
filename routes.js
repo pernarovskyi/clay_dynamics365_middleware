@@ -1,6 +1,10 @@
 const express = require("express");
 const { getToken, checkApiKey } = require("./auth");
-const { getContactByEmail, createContact, updateContact } = require("./dynamics");
+const {
+  getContactByEmail,
+  createContact,
+  updateContact,
+} = require("./dynamics");
 
 const router = express.Router();
 
@@ -9,13 +13,26 @@ const router = express.Router();
 // ====================
 router.get("/contact", checkApiKey, async (req, res) => {
   try {
-    const email = req.query.email;
+    //const email = req.query.email;
+    let email = req.query.email;
+
+    if (Array.isArray(email)) {
+      email = email[0];
+    }
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required",
+      });
+    }
+
     console.log("Clay EMAIL:", req.query.email);
     // 1. Валідація
     if (!email) {
       return res.status(400).json({
         success: false,
-        error: "Email is required"
+        error: "Email is required",
       });
     }
 
@@ -29,7 +46,7 @@ router.get("/contact", checkApiKey, async (req, res) => {
     if (!contact) {
       return res.json({
         success: true,
-        found: false
+        found: false,
       });
     }
 
@@ -39,19 +56,18 @@ router.get("/contact", checkApiKey, async (req, res) => {
       found: true,
       contactid: contact.contactid || null,
       fullname: contact.fullname || "",
-      email: contact.emailaddress1 || ""
+      email: contact.emailaddress1 || "",
     });
-
   } catch (err) {
     console.error("GET /contact error:", {
       status: err.response?.status,
       data: err.response?.data,
-      message: err.message
+      message: err.message,
     });
 
     return res.status(err.response?.status || 500).json({
       success: false,
-      error: err.response?.data || err.message
+      error: err.response?.data || err.message,
     });
   }
 });
@@ -81,7 +97,7 @@ router.post("/contact/upsert", checkApiKey, async (req, res) => {
 
       return res.json({
         success: true,
-        action: "updated"
+        action: "updated",
       });
     }
 
@@ -90,18 +106,17 @@ router.post("/contact/upsert", checkApiKey, async (req, res) => {
 
     res.json({
       success: true,
-      action: "created"
+      action: "created",
     });
-
   } catch (err) {
     console.error("UPSERT ERROR:", {
       status: err.response?.status,
       data: err.response?.data,
-      message: err.message
+      message: err.message,
     });
 
     res.status(err.response?.status || 500).json({
-      error: err.response?.data || err.message
+      error: err.response?.data || err.message,
     });
   }
 });
@@ -109,10 +124,10 @@ router.post("/contact/upsert", checkApiKey, async (req, res) => {
 // ====================
 // ❤️ HEALTH CHECK
 // ====================
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   res.json({
-    status: 'ok',
-    message: 'API is running'
+    status: "ok",
+    message: "API is running",
   });
 });
 
