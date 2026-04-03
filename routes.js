@@ -10,7 +10,7 @@ const router = express.Router();
 router.get("/contact", checkApiKey, async (req, res) => {
   try {
     const email = req.query.email;
-
+    console.log("Clay EMAIL:", req.query.email);
     // 1. Валідація
     if (!email) {
       return res.status(400).json({
