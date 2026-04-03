@@ -11,32 +11,46 @@ router.get("/contact", checkApiKey, async (req, res) => {
   try {
     const email = req.query.email;
 
+    // 1. Валідація
     if (!email) {
-      return res.status(400).json({ error: "Email is required" });
+      return res.status(400).json({
+        success: false,
+        error: "Email is required"
+      });
     }
 
+    // 2. Отримати токен
     const token = await getToken();
+
+    // 3. Отримати контакт
     const contact = await getContactByEmail(email, token);
 
+    // 4. Якщо не знайдено
     if (!contact) {
-      return res.json({ found: false });
+      return res.json({
+        success: true,
+        found: false
+      });
     }
 
-    res.json({
+    // 5. Успішна відповідь
+    return res.json({
+      success: true,
       found: true,
-      contactid: contact.contactid,
+      contactid: contact.contactid || null,
       fullname: contact.fullname || "",
       email: contact.emailaddress1 || ""
     });
 
   } catch (err) {
-    console.error("GET ERROR:", {
+    console.error("GET /contact error:", {
       status: err.response?.status,
       data: err.response?.data,
       message: err.message
     });
 
-    res.status(err.response?.status || 500).json({
+    return res.status(err.response?.status || 500).json({
+      success: false,
       error: err.response?.data || err.message
     });
   }
