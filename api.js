@@ -54,7 +54,9 @@ async function dynamicsRequest(method, url, token, data = null) {
 // 🔍 GET CONTACT (shared logic)
 // ====================
 async function getContactByEmail(email, token) {
-  const safeEmail = email.replace(/'/g, "''");
+  if (!email) return null;
+
+  const safeEmail = String(email).replace(/'/g, "''");
 
   const url = `${ORG_URL}/api/data/v9.2/contacts?$filter=emailaddress1 eq '${safeEmail}'&$select=contactid,fullname,emailaddress1`;
 
@@ -89,7 +91,11 @@ app.get("/api/contact", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("GET ERROR:", err.response?.data || err.message);
+    console.error("GET ERROR:", {
+      status: err.response?.status,
+      data: err.response?.data,
+      message: err.message
+    });
 
     res.status(err.response?.status || 500).json({
       error: err.response?.data || err.message
@@ -142,7 +148,7 @@ app.post("/api/contact/upsert", async (req, res) => {
       token,
       {
         fullname: fullname || "",
-        emailaddress1: email.replace(/'/g, "''")
+        emailaddress1: String(email).replace(/'/g, "''")
       }
     );
 
@@ -152,12 +158,30 @@ app.post("/api/contact/upsert", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("UPSERT ERROR:", err.response?.data || err.message);
+    console.error("UPSERT ERROR:", {
+      status: err.response?.status,
+      data: err.response?.data,
+      message: err.message
+    });
 
     res.status(err.response?.status || 500).json({
       error: err.response?.data || err.message
     });
   }
+});
+
+// ====================
+// ❤️ HEALTH CHECK
+// ====================
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'API is running'
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
 // ====================
