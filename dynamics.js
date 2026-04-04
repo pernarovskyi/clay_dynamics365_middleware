@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { ALLOWED_FIELDS, DEFAULT_FIELDS } = require("./config/contact_fields");
 
 const ORG_URL = process.env.ORG_URL;
 
@@ -20,16 +21,34 @@ async function dynamicsRequest(method, url, token, data = null) {
 // ====================
 // 🔍 GET CONTACT BY EMAIL
 // ====================
-async function getContactByEmail(email, token) {
+async function getContactByEmail(email, token, requestedFields = null) {
   if (!email) return null;
 
   const safeEmail = String(email).replace(/'/g, "''");
 
-  const url = `${ORG_URL}/api/data/v9.2/contacts?$filter=emailaddress1 eq '${safeEmail}'&$select=contactid,fullname,emailaddress1`;
+  // ====================
+  // 🎯 Check fields
+  // ====================
+
+  let fields = DEFAULT_FIELDS;
+
+  if (requestedFields && Array.isArray(requestedFields)) {
+    const filtered = requestedFields.filter(f =>
+      ALLOWED_FIELDS.includes(f)
+    );
+
+    if (filtered.length > 0) {
+      fields = filtered;
+    }
+  }
+
+  const select = fields.join(",");
+
+  const url = `${ORG_URL}/api/data/v9.2/contacts?$filter=emailaddress1 eq '${safeEmail}'&$select=${select}`;
 
   const res = await dynamicsRequest("GET", url, token);
 
-  return res.data.value?.[0] || null;
+  return res.data.value[0];
 }
 
 // ====================

@@ -13,9 +13,9 @@ const router = express.Router();
 // ====================
 router.get("/contact", checkApiKey, async (req, res) => {
   try {
-    //const email = req.query.email;
     let email = req.query.email;
 
+    // ✅ array processing
     if (Array.isArray(email)) {
       email = email[0];
     }
@@ -23,51 +23,46 @@ router.get("/contact", checkApiKey, async (req, res) => {
     if (!email) {
       return res.status(400).json({
         success: false,
-        error: "Email is required",
+        error: "Email is required"
       });
     }
 
-    console.log("Clay EMAIL:", req.query.email);
-    // 1. Валідація
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        error: "Email is required",
-      });
-    }
+    // 🎯 field processing
+    const requestedFields = req.query.fields
+      ? req.query.fields.split(",")
+      : null;
 
-    // 2. Отримати токен
     const token = await getToken();
 
-    // 3. Отримати контакт
-    const contact = await getContactByEmail(email, token);
+    const contact = await getContactByEmail(
+      email,
+      token,
+      requestedFields
+    );
 
-    // 4. Якщо не знайдено
     if (!contact) {
       return res.json({
         success: true,
-        found: false,
+        found: false
       });
     }
 
-    // 5. Успішна відповідь
     return res.json({
       success: true,
       found: true,
-      contactid: contact.contactid || null,
-      fullname: contact.fullname || "",
-      email: contact.emailaddress1 || "",
+      ...contact // 🔥 automatically returns all selected fields
     });
+
   } catch (err) {
     console.error("GET /contact error:", {
       status: err.response?.status,
       data: err.response?.data,
-      message: err.message,
+      message: err.message
     });
 
     return res.status(err.response?.status || 500).json({
       success: false,
-      error: err.response?.data || err.message,
+      error: err.response?.data || err.message
     });
   }
 });
