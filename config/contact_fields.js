@@ -4,14 +4,19 @@ const ALLOWED_FIELDS = [
   "fullname",
   "emailaddress1",
   "jobtitle",
-  "telephone1"
+  "telephone1",
+  "new_linkedin",
+  "new_company_name",
+  "new_company_website"
 ];
 
 // default fields for GET CONTACT BY EMAIL endpoint
 const DEFAULT_FIELDS = [
   "contactid",
   "fullname",
-  "emailaddress1"
+  "emailaddress1",
+  "jobtitle",
+  "new_linkedin"
 ];
 
 module.exports = {
