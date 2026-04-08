@@ -1,10 +1,10 @@
 const express = require("express");
-const { getToken, checkApiKey } = require("./auth");
+const { getToken, checkApiKey } = require("../services/auth");
 const {
   getContactByEmail,
   createContact,
   updateContact,
-} = require("./dynamics");
+} = require("../services/dynamics");
 
 const router = express.Router();
 

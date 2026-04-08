@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { ALLOWED_FIELDS, DEFAULT_FIELDS } = require("./config/contact_fields");
+const { ALLOWED_FIELDS, DEFAULT_FIELDS } = require("../config/contact_fields");
 
 const ORG_URL = process.env.ORG_URL;
 

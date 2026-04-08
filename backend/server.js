@@ -19,7 +19,7 @@ requiredEnv.forEach((key) => {
 const app = express();
 app.use(express.json());
 
-const routes = require("./routes");
+const routes = require("./api/routes");
 
 app.use("/api", routes);
 
