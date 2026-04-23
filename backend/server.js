@@ -33,7 +33,9 @@ app.use(cors({
 app.use(express.json());
 
 const routes = require("./api/routes");
+const fieldsRoutes = require("./routes/fields");
 
+app.use("/api/fields", fieldsRoutes);
 app.use("/api", routes);
 
 app.get("/", (req, res, next) => {

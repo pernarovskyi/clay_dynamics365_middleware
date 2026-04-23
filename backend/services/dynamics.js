@@ -1,11 +1,8 @@
 const axios = require("axios");
-const { ALLOWED_FIELDS, DEFAULT_FIELDS } = require("../config/contact_fields");
+const { getAllowedFields, getDefaultFields } = require("../config/contact_fields");
 
-const ORG_URL = process.env.ORG_URL;
+const ORG_URL = (process.env.ORG_URL || "").replace(/\/$/, "");
 
-// ====================
-// 🔧 DYNAMICS API WRAPPER
-// ====================
 async function dynamicsRequest(method, url, token, data = null) {
   return axios({
     method,
@@ -13,62 +10,48 @@ async function dynamicsRequest(method, url, token, data = null) {
     data,
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "OData-MaxVersion": "4.0",
+      "OData-Version": "4.0"
     }
   });
 }
 
-// ====================
-// 🔍 GET CONTACT BY EMAIL
-// ====================
 async function getContactByEmail(email, token, requestedFields = null) {
   if (!email) return null;
 
   const safeEmail = String(email).replace(/'/g, "''");
+  const allowed = getAllowedFields();
+  const defaults = getDefaultFields();
 
-  // ====================
-  // 🎯 Check fields
-  // ====================
-
-  let fields = DEFAULT_FIELDS;
+  let fields = defaults;
 
   if (requestedFields && Array.isArray(requestedFields)) {
-    const filtered = requestedFields.filter(f =>
-      ALLOWED_FIELDS.includes(f)
-    );
-
+    const filtered = requestedFields.filter(f => allowed.includes(f));
     if (filtered.length > 0) {
       fields = filtered;
     }
   }
 
-  const select = fields.join(",");
+  // contactid must always be present so callers can reference the record
+  const select = fields.includes("contactid") ? fields : ["contactid", ...fields];
 
-  const url = `${ORG_URL}/api/data/v9.2/contacts?$filter=emailaddress1 eq '${safeEmail}'&$select=${select}`;
+  const url = `${ORG_URL}/api/data/v9.2/contacts?$filter=emailaddress1 eq '${safeEmail}'&$select=${select.join(",")}`;
 
   const res = await dynamicsRequest("GET", url, token);
-
   return res.data.value[0];
 }
 
-// ====================
-// ➕ CREATE CONTACT
-// ====================
-async function createContact(email, fullname, token) {
+async function createContact(data, token) {
   return dynamicsRequest(
     "POST",
     `${ORG_URL}/api/data/v9.2/contacts`,
     token,
-    {
-      fullname: fullname || "",
-      emailaddress1: String(email).replace(/'/g, "''")
-    }
+    data
   );
 }
 
-// ====================
-// ✏️ UPDATE CONTACT
-// ====================
 async function updateContact(contactId, data, token) {
   return dynamicsRequest(
     "PATCH",
