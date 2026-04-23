@@ -5,28 +5,14 @@ const FIELDS_FILE = path.join(__dirname, "fields.json");
 
 const FALLBACK = {
   allowed: [
-    "contactid",
-    "firstname",
-    "lastname",
-    "fullname",
-    "emailaddress1",
-    "jobtitle",
-    "telephone1",
-    "new_linkedin",
-    "new_company_name",
-    "new_company_website"
+    "contactid", "firstname", "lastname", "fullname",
+    "emailaddress1", "jobtitle", "telephone1",
+    "new_linkedin", "new_company_name", "new_company_website"
   ],
   defaults: [
-    "contactid",
-    "firstname",
-    "lastname",
-    "fullname",
-    "emailaddress1",
-    "jobtitle",
-    "telephone1",
-    "new_linkedin",
-    "new_company_name",
-    "new_company_website"
+    "contactid", "firstname", "lastname", "fullname",
+    "emailaddress1", "jobtitle", "telephone1",
+    "new_linkedin", "new_company_name", "new_company_website"
   ]
 };
 
