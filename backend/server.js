@@ -24,7 +24,7 @@ app.use(helmet());
 
 app.use(cors({
   origin: [
-    process.env.LOCALHOST_URL || "http://localhost:3000",
+    process.env.LOCALHOST_URL || "http://localhost:5000",
     process.env.FRONTEND_URL,    
   ].filter(Boolean),
   credentials: true
