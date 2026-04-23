@@ -1,5 +1,5 @@
 const dynamics = require("./dynamics.service");
-const { getAllowed, getDefaults } = require("./contact-fields.service");
+const { getAllowed, getDefaults } = require("./contact.fields.service");
 
 async function getByEmail(email, requestedFields = null) {
   const allowed = getAllowed();

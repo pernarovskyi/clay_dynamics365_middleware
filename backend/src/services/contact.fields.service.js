@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { load, invalidate } = require("../loaders/fields.loader");
 
-const FIELDS_FILE = path.join(__dirname, "../config/fields.json");
+const FIELDS_FILE = path.join(__dirname, "../config/CRM.fields.json");
 
 const FALLBACK = {
   allowed: [

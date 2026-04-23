@@ -3,7 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 
 const contactRoutes = require("./routes/contact.routes");
-const contactFieldsRoutes = require("./routes/contact-fields.routes");
+const contactFieldsRoutes = require("./routes/contact.fields.routes");
 const healthRoutes = require("./routes/health.routes");
 
 const requiredEnv = ["ORG_URL", "API_KEY", "TENANT_ID", "CLIENT_ID", "CLIENT_SECRET", "FRONTEND_URL"];

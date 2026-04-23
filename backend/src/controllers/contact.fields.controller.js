@@ -1,4 +1,4 @@
-const contactFieldsService = require("../services/contact-fields.service");
+const contactFieldsService = require("../services/contact.fields.service");
 
 function getFields(req, res) {
   try {

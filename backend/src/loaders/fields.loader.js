@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const FIELDS_FILE = path.join(__dirname, "../config/fields.json");
+const FIELDS_FILE = path.join(__dirname, "../config/CRM.fields.json");
 
 let cache = null;
 
