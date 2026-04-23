@@ -1,8 +1,16 @@
 const dynamics = require("./dynamics.service");
-const { getAllowed } = require("./contactFields.service");
+const { getAllowed, getDefaults } = require("./contact-fields.service");
 
 async function getByEmail(email, requestedFields = null) {
-  return dynamics.getContactByEmail(email, requestedFields);
+  const allowed = getAllowed();
+  let fields = getDefaults();
+
+  if (requestedFields && Array.isArray(requestedFields)) {
+    const filtered = requestedFields.filter(f => allowed.includes(f));
+    if (filtered.length > 0) fields = filtered;
+  }
+
+  return dynamics.getContactByEmail(email, fields);
 }
 
 async function upsert(email, fields) {
@@ -11,7 +19,7 @@ async function upsert(email, fields) {
     Object.entries(fields).filter(([k]) => writable.includes(k))
   );
 
-  const existing = await dynamics.getContactByEmail(email);
+  const existing = await dynamics.getContactByEmail(email, ["contactid"]);
 
   if (existing) {
     if (Object.keys(contactData).length > 0) {
