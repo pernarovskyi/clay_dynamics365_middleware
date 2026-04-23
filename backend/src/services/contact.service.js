@@ -1,12 +1,12 @@
 const dynamics = require("./dynamics.service");
-const { getAllowedFields } = require("../config/contactFields.config");
+const { getAllowed } = require("./contactFields.service");
 
 async function getByEmail(email, requestedFields = null) {
   return dynamics.getContactByEmail(email, requestedFields);
 }
 
 async function upsert(email, fields) {
-  const writable = getAllowedFields().filter(f => f !== "contactid");
+  const writable = getAllowed().filter(f => f !== "contactid");
   const contactData = Object.fromEntries(
     Object.entries(fields).filter(([k]) => writable.includes(k))
   );

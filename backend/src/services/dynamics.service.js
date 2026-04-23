@@ -1,6 +1,6 @@
 const axios = require("axios");
-const { getToken } = require("./auth.service");
-const { getAllowedFields, getDefaultFields } = require("../config/contactFields.config");
+const { getToken } = require("./auth/token.service");
+const { getAllowed, getDefaults } = require("./contactFields.service");
 
 const ORG_URL = (process.env.ORG_URL || "").replace(/\/$/, "");
 
@@ -22,12 +22,10 @@ async function request(method, url, data = null) {
 
 async function getContactByEmail(email, requestedFields = null) {
   const safeEmail = String(email).replace(/'/g, "''");
-  const allowed = getAllowedFields();
-  const defaults = getDefaultFields();
 
-  let fields = defaults;
+  let fields = getDefaults();
   if (requestedFields && Array.isArray(requestedFields)) {
-    const filtered = requestedFields.filter(f => allowed.includes(f));
+    const filtered = requestedFields.filter(f => getAllowed().includes(f));
     if (filtered.length > 0) fields = filtered;
   }
 

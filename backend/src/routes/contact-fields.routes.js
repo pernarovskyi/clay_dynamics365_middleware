@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkApiKey } = require("../services/auth.service");
+const { checkApiKey } = require("../services/auth/apiKey.middleware");
 const { getFields, updateFields } = require("../controllers/contactFields.controller");
 
 const router = express.Router();

@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const FIELDS_FILE = path.join(__dirname, "fields.json");
+const FIELDS_FILE = path.join(__dirname, "../config/fields.json");
 
 const FALLBACK = {
   allowed: [
@@ -16,20 +16,24 @@ const FALLBACK = {
   ]
 };
 
-function loadConfig() {
+let cache = null;
+
+function load() {
+  if (cache) return cache;
   try {
-    return JSON.parse(fs.readFileSync(FIELDS_FILE, "utf8"));
+    cache = JSON.parse(fs.readFileSync(FIELDS_FILE, "utf8"));
+    return cache;
   } catch {
     return FALLBACK;
   }
 }
 
-function getAllowedFields() {
-  return loadConfig().allowed;
+function invalidate() {
+  cache = null;
 }
 
-function getDefaultFields() {
-  return loadConfig().defaults;
+function getFilePath() {
+  return FIELDS_FILE;
 }
 
-module.exports = { getAllowedFields, getDefaultFields };
+module.exports = { load, invalidate, getFilePath };
