@@ -24,6 +24,8 @@ async function upsert(email, fields) {
 
   if (existing) {
     const payload = cleanPayload(contactData);
+    console.log("=== CLEANED PAYLOAD (upsert) ===");
+    console.log(JSON.stringify(payload));
     if (Object.keys(payload).length > 0) {
       await dynamics.updateContact(existing.contactid, payload);
     }
@@ -44,6 +46,8 @@ async function updateById(contactId, fields) {
   );
 
   const payload = cleanPayload(contactData);
+  console.log("=== CLEANED PAYLOAD (updateById) ===");
+  console.log(JSON.stringify(payload));
 
   if (Object.keys(payload).length === 0) {
     const err = new Error("No valid fields provided");

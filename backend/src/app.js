@@ -22,6 +22,15 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log("=== INCOMING REQUEST ===");
+  console.log("Method:", req.method);
+  console.log("URL:", req.originalUrl);
+  if (req.params && Object.keys(req.params).length) console.log("Params:", req.params);
+  if (req.body && Object.keys(req.body).length) console.log("Body:", JSON.stringify(req.body));
+  next();
+});
+
 app.use("/api/fields", contactFieldsRoutes);
 app.use("/api", contactRoutes);
 app.use("/", healthRoutes);

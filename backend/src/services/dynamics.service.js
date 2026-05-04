@@ -4,6 +4,11 @@ const { getToken } = require("./auth/token.service");
 const ORG_URL = (process.env.ORG_URL || "").replace(/\/$/, "");
 
 async function request(method, url, data = null) {
+  console.log("=== DYNAMICS REQUEST ===");
+  console.log("Method:", method);
+  console.log("URL:", url);
+  if (data) console.log("Payload:", JSON.stringify(data));
+
   const token = await getToken();
   return axios({
     method,

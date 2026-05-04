@@ -20,7 +20,10 @@ async function getContact(req, res) {
     return res.json({ success: true, found: true, ...contact });
 
   } catch (err) {
-    console.error("GET /contact:", err.response?.data || err.message);
+    console.error("=== ERROR [GET /contact] ===");
+    console.error("Message:", err.message);
+    console.error("Status:", err.response?.status);
+    console.error("Response:", err.response?.data);
     return res.status(err.response?.status || 500).json({
       success: false,
       error: err.response?.data || err.message
@@ -43,7 +46,10 @@ async function upsertContact(req, res) {
     return res.json({ success: true, ...result });
 
   } catch (err) {
-    console.error("POST /contact/upsert:", err.response?.data || err.message);
+    console.error("=== ERROR [POST /contact/upsert] ===");
+    console.error("Message:", err.message);
+    console.error("Status:", err.response?.status);
+    console.error("Response:", err.response?.data);
     return res.status(err.response?.status || 500).json({
       success: false,
       error: err.response?.data || err.message
@@ -70,7 +76,10 @@ async function patchContact(req, res) {
     if (err.response?.status === 404) {
       return res.status(404).json({ success: false, error: "Contact not found" });
     }
-    console.error("PATCH /contacts/:id:", err.response?.data || err.message);
+    console.error("=== ERROR [PATCH /contacts/:id] ===");
+    console.error("Message:", err.message);
+    console.error("Status:", err.response?.status);
+    console.error("Response:", err.response?.data);
     return res.status(err.response?.status || 500).json({
       success: false,
       error: err.response?.data || err.message
