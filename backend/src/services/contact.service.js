@@ -1,5 +1,6 @@
 const dynamics = require("./dynamics.service");
 const { getAllowed, getDefaults } = require("./contact.fields.service");
+const { cleanPayload } = require("../utils/validators");
 
 async function getByEmail(email, requestedFields = null) {
   const allowed = getAllowed();
@@ -22,8 +23,9 @@ async function upsert(email, fields) {
   const existing = await dynamics.getContactByEmail(email, ["contactid"]);
 
   if (existing) {
-    if (Object.keys(contactData).length > 0) {
-      await dynamics.updateContact(existing.contactid, contactData);
+    const payload = cleanPayload(contactData);
+    if (Object.keys(payload).length > 0) {
+      await dynamics.updateContact(existing.contactid, payload);
     }
     return { action: "updated", contactid: existing.contactid };
   }
@@ -41,13 +43,15 @@ async function updateById(contactId, fields) {
     Object.entries(fields).filter(([k]) => writable.includes(k))
   );
 
-  if (Object.keys(contactData).length === 0) {
+  const payload = cleanPayload(contactData);
+
+  if (Object.keys(payload).length === 0) {
     const err = new Error("No valid fields provided");
     err.statusCode = 400;
     throw err;
   }
 
-  await dynamics.updateContact(contactId, contactData);
+  await dynamics.updateContact(contactId, payload);
   return { action: "updated", contactid: contactId };
 }
 
