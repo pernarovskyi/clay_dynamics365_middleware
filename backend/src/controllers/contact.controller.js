@@ -51,4 +51,31 @@ async function upsertContact(req, res) {
   }
 }
 
-module.exports = { getContact, upsertContact };
+async function patchContact(req, res) {
+  try {
+    const { id } = req.params;
+    const fields = req.body;
+
+    if (!fields || Object.keys(fields).length === 0) {
+      return res.status(400).json({ success: false, error: "Request body is empty" });
+    }
+
+    const result = await contactService.updateById(id, fields);
+    return res.json({ success: true, ...result });
+
+  } catch (err) {
+    if (err.statusCode === 400) {
+      return res.status(400).json({ success: false, error: err.message });
+    }
+    if (err.response?.status === 404) {
+      return res.status(404).json({ success: false, error: "Contact not found" });
+    }
+    console.error("PATCH /contacts/:id:", err.response?.data || err.message);
+    return res.status(err.response?.status || 500).json({
+      success: false,
+      error: err.response?.data || err.message
+    });
+  }
+}
+
+module.exports = { getContact, upsertContact, patchContact };

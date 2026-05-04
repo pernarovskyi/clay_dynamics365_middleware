@@ -35,4 +35,20 @@ async function upsert(email, fields) {
   return { action: "created", contactid: match?.[1] || null };
 }
 
-module.exports = { getByEmail, upsert };
+async function updateById(contactId, fields) {
+  const writable = getAllowed().filter(f => f !== "contactid");
+  const contactData = Object.fromEntries(
+    Object.entries(fields).filter(([k]) => writable.includes(k))
+  );
+
+  if (Object.keys(contactData).length === 0) {
+    const err = new Error("No valid fields provided");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  await dynamics.updateContact(contactId, contactData);
+  return { action: "updated", contactid: contactId };
+}
+
+module.exports = { getByEmail, upsert, updateById };
